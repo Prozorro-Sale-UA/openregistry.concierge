@@ -255,7 +255,7 @@ class ProcessingLoki(object):
         lot_related_process_data = self.make_lot_related_process(lot)
         for rP in related_process_type_asset:
             try:
-                created_rP = self._create_asset_related_process(rP['relatedProcessID'], lot_related_process_data)
+                created_rP = self._create_asset_related_process(rP['relatedProcessID'], lot_related_process_data)['data']
                 created_rP['asset_parent'] = rP['relatedProcessID']
             except EXCEPTIONS as e:
                 is_all_patched = False
@@ -430,9 +430,9 @@ class ProcessingLoki(object):
                     to_patch
                 )
                 if result is False:
-                    self._process_lot_and_assets(lot, 'composing', 'pending')
                     self._patch_lot_asset_related_processes(lot, cleanup=True)
                     self.clean_asset_related_processes(asset_added_rPs)
+                    self._process_lot_and_assets(lot, 'composing', 'pending')
                     log_broken_lot(self.db, logger, self.errors_doc, lot, 'patching Lot to pending')
                     return False
                 return True
